@@ -379,6 +379,26 @@ public final class Yices {
     public static native int termNumChildren(int x);
     public static native int termChild(int x, int idx);
 
+    private static native byte[] sumComponentRationalConstNumAsBytes(int x, int idx); // null for error
+    private static native byte[] sumComponentRationalConstDenAsBytes(int x, int idx); // null for error
+    public static native int sumComponentTerm(int x, int idx);
+
+    public static BigRational sumComponentRationalConstValue(int x, int idx) {
+        byte[] num = sumComponentRationalConstNumAsBytes(x, idx);
+        byte[] den = sumComponentRationalConstDenAsBytes(x, idx);
+        if (num != null && den != null) {
+            return new BigRational(num, den);
+        } else {
+            return null;
+        }
+    }
+
+    public static native int sumbvComponentTerm(int x, int idx);
+    public static native boolean[] sumbvComponentBvConstValue(int x, int idx);
+
+    public static native int productComponentTerm(int x, int idx);
+    public static native int productComponentExpConstValue(int x, int idx);
+
     // all children of x or NULL if x is not a valid term
     public static native int[] termChildren(int x);
     public static native int termProjIndex(int x);

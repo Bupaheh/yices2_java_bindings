@@ -1246,6 +1246,34 @@ public class Terms {
         return t;
     }
 
+    static public int sumComponentTerm(int x, int idx) {
+        return Yices.sumComponentTerm(x, idx);
+    }
+
+    static public BigRational sumComponentRationalConstValue(int x, int idx) {
+        BigRational r = Yices.sumComponentRationalConstValue(x, idx);
+        if (r == null) throw new YicesException();
+        return r;
+    }
+
+    static public int sumbvComponentTerm(int x, int idx) {
+        return Yices.sumbvComponentTerm(x, idx);
+    }
+
+    static public boolean[] sumbvComponentBvConstValue(int x, int idx) {
+        boolean[] t = Yices.sumbvComponentBvConstValue(x, idx);
+        if (t == null) throw new YicesException();
+        return t;
+    }
+
+    static public int productComponentTerm(int x, int idx) {
+        return Yices.productComponentTerm(x, idx);
+    }
+
+    static public int productComponentExpConstValue(int x, int idx) {
+        return Yices.productComponentExpConstValue(x, idx);
+    }
+
     static public int projIndex(int x) throws YicesException {
         int idx = Yices.termProjIndex(x);
         if (idx < 0) throw new YicesException();

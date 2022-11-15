@@ -2622,6 +2622,125 @@ JNIEXPORT jintArray JNICALL Java_com_sri_yices_Yices_termChildren(JNIEnv *env, j
 #endif
 }
 
+JNIEXPORT jbyteArray JNICALL Java_com_sri_yices_Yices_sumComponentRationalConstNumAsBytes(JNIEnv *env, jclass, jint x, jint idx) {
+  jbyteArray result = NULL;
+  mpq_t q;
+
+  term_t t;
+
+  mpq_init(q);
+  if (yices_sum_component(x, idx, q, &t) >= 0) {
+    result = mpz_to_byte_array(env, mpq_numref(q));
+  }
+  mpq_clear(q);
+
+  return result;
+}
+
+
+JNIEXPORT jbyteArray JNICALL Java_com_sri_yices_Yices_sumComponentRationalConstDenAsBytes(JNIEnv *env, jclass, jint x, jint idx) {
+  jbyteArray result = NULL;
+  mpq_t q;
+
+  term_t t;
+
+  mpq_init(q);
+  if (yices_sum_component(x, idx, q, &t) >= 0) {
+    result = mpz_to_byte_array(env, mpq_denref(q));
+  }
+  mpq_clear(q);
+
+  return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_sumComponentTerm(JNIEnv *env, jclass, jint x, jint idx) {
+  term_t result;
+  mpq_t q;
+
+  mpq_init(q);
+  assert(yices_sum_component(x, idx, q, &result) >= 0);
+  mpq_clear(q);
+
+  return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_sumbvComponentTerm(JNIEnv *env, jclass, jint x, jint idx) {
+  term_t result;
+
+  assert(yices_term_constructor(x) == YICES_BV_SUM);
+
+  int32_t n = yices_term_bitsize(x);
+
+  assert(n >= 0);
+
+  if (n <= 64) {
+    // this should be the common case
+    int32_t a[64];
+    int32_t code = yices_bvsum_component(x, idx, a, &result);
+    assert(code >= 0);
+  } else {
+    try {
+      int32_t *tmp =  new int32_t[n];
+      int32_t code = yices_bvsum_component(x, idx, tmp, &result);
+      assert(code >= 0);
+      delete [] tmp;
+    } catch (std::bad_alloc) {
+      out_of_mem_exception(env);
+    }
+  }
+
+  return result;
+}
+
+JNIEXPORT jbooleanArray JNICALL Java_com_sri_yices_Yices_sumbvComponentBvConstValue(JNIEnv *env, jclass, jint x, jint idx) {
+  jbooleanArray result = NULL;
+  term_t t;
+
+  assert(yices_term_constructor(x) == YICES_BV_SUM);
+
+  int32_t n = yices_term_bitsize(x);
+
+  assert(n >= 0);
+
+  if (n <= 64) {
+    // this should be the common case
+    int32_t a[64];
+    int32_t code = yices_bvsum_component(x, idx, a, &t);
+    assert(code >= 0);
+    result = convertToBoolArray(env, n, a);
+  } else {
+    try {
+      int32_t *tmp =  new int32_t[n];
+      int32_t code = yices_bvsum_component(x, idx, tmp, &t);
+      assert(code >= 0);
+      result = convertToBoolArray(env, n, tmp);
+      delete [] tmp;
+    } catch (std::bad_alloc) {
+      out_of_mem_exception(env);
+    }
+  }
+
+  return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_productComponentTerm(JNIEnv *env, jclass, jint x, jint idx) {
+  term_t result;
+  uint32_t exp;
+
+  assert(yices_product_component(x, idx, &result, &exp) >= 0);
+
+  return result;
+}
+
+JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_productComponentExpConstValue(JNIEnv *env, jclass, jint x, jint idx) {
+  uint32_t result;
+  term_t t;
+
+  assert(yices_product_component(x, idx, &t, &result) >= 0);
+
+  return result;
+}
+
 JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_termProjIndex(JNIEnv *env, jclass, jint x) {
   return yices_proj_index(x);
 }
