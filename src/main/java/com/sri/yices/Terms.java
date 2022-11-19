@@ -818,7 +818,7 @@ public class Terms {
     }
 
     static public int bvAnd(int left, int right) throws YicesException {
-        int t = Yices.bvAdd(left, right);
+        int t = Yices.bvAnd(left, right);
         if (t < 0) throw new YicesException();
         return t;
     }
