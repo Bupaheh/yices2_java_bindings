@@ -3,6 +3,8 @@ package com.sri.yices;
 import java.math.BigInteger;
 
 public final class Yices {
+    public static class IntPtr { public int value; }
+
     private static boolean is_ready;
 
     /*
@@ -11,15 +13,19 @@ public final class Yices {
      * For now, it's best to see the exception (if any) rather than catch it
      * and print a generic message.
      */
-    static {
-        try {
-            System.loadLibrary("yices2java");
-            init();
-            is_ready = true;
-        } catch (LinkageError e) {
-            is_ready = false;
-            throw e;
-        }
+//     static {
+//         try {
+//             System.loadLibrary("yices2java");
+//             init();
+//             is_ready = true;
+//         } catch (LinkageError e) {
+//             is_ready = false;
+//             throw e;
+//         }
+//     }
+    
+    public static void setReadyFlag(boolean value) {
+		is_ready = value;
     }
 
     /*
@@ -83,7 +89,7 @@ public final class Yices {
      * - exit frees the internal data structures used by Yices
      * - reset is the same as exit(); init();
      */
-    private static native void init();
+    public static native void init();
     private static native void exit();
     public static native void reset();
 
@@ -392,12 +398,8 @@ public final class Yices {
             return null;
         }
     }
-
-    public static native int sumbvComponentTerm(int x, int idx);
-    public static native boolean[] sumbvComponentBvConstValue(int x, int idx);
-
-    public static native int productComponentTerm(int x, int idx);
-    public static native int productComponentExpConstValue(int x, int idx);
+    public static native boolean[] sumbvComponent(int x, int idx, IntPtr t);
+    public static native int productComponent(int x, int idx, IntPtr t);
 
     // all children of x or NULL if x is not a valid term
     public static native int[] termChildren(int x);

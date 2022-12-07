@@ -10,6 +10,16 @@ import java.util.List;
  * These call the native API and throw a YicesException if there's an error.
  */
 public class Terms {
+    public static class Component<K> {
+        public int term;
+        public K constValue;
+
+        public Component(int term, K constValue) {
+            this.term = term;
+            this.constValue = constValue;
+        }
+    }
+
     /**
      * Short cuts for true/false/zero/one/minus_one
      */
@@ -1246,32 +1256,29 @@ public class Terms {
         return t;
     }
 
-    static public int sumComponentTerm(int x, int idx) {
-        return Yices.sumComponentTerm(x, idx);
-    }
-
-    static public BigRational sumComponentRationalConstValue(int x, int idx) {
+    static public Component<BigRational> sumComponent(int x, int idx) {
+        int t = Yices.sumComponentTerm(x, idx);
         BigRational r = Yices.sumComponentRationalConstValue(x, idx);
         if (r == null) throw new YicesException();
-        return r;
+        return new Component<>(t, r);
     }
 
-    static public int sumbvComponentTerm(int x, int idx) {
-        return Yices.sumbvComponentTerm(x, idx);
+    static public Component<Boolean[]> sumbvComponent(int x, int idx) {
+        Yices.IntPtr t = new Yices.IntPtr();
+        boolean[] _constValue = Yices.sumbvComponent(x, idx, t);
+        Boolean[] constValue = new Boolean[_constValue.length];
+
+        for (int i = 0; i < constValue.length; i++)
+            constValue[i] = _constValue[i];
+
+        return new Component<>(t.value, constValue);
     }
 
-    static public boolean[] sumbvComponentBvConstValue(int x, int idx) {
-        boolean[] t = Yices.sumbvComponentBvConstValue(x, idx);
-        if (t == null) throw new YicesException();
-        return t;
-    }
+    static public Component<Integer> productComponent(int x, int idx) {
+        Yices.IntPtr t = new Yices.IntPtr();
+        int constValue = Yices.productComponent(x, idx, t);
 
-    static public int productComponentTerm(int x, int idx) {
-        return Yices.productComponentTerm(x, idx);
-    }
-
-    static public int productComponentExpConstValue(int x, int idx) {
-        return Yices.productComponentExpConstValue(x, idx);
+        return new Component<>(t.value, constValue);
     }
 
     static public int projIndex(int x) throws YicesException {
