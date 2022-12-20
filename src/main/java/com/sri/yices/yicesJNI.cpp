@@ -4678,7 +4678,7 @@ JNIEXPORT jint JNICALL Java_com_sri_yices_Yices_valExpandFunction(JNIEnv *env, j
     return -1;
   }
   cardinality = Java_com_sri_yices_Yices_valFunctionCardinality(env, cls, mdl, tag, id);
-  if (cardinality <= 0) {
+  if (cardinality < 0) {
     return -2;
   }
   ndef = env->GetArrayLength(def);
