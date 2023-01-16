@@ -27,4 +27,8 @@ public class YVal {
         return String.format("<%s: %d>", tag, id);
     }
 
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
