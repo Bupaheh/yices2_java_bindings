@@ -338,6 +338,14 @@ public class Context implements AutoCloseable {
         return Status.idToStatus(code);
     }
 
+    public Status checkWithAssumptions(int[] assumptions) {
+        int code = Yices.checkContextWithAssumptions(ptr, 0, assumptions);
+        if (code < 0) {
+            throw new YicesException();
+        }
+        return Status.idToStatus(code);
+    }
+
     // Since 2.6.4
     public Status checkWithModel(Parameters params, Model model, int[] assumptions) {
         int code = Yices.checkContextWithModel(ptr, params.getPtr(), model.getPtr(), assumptions);

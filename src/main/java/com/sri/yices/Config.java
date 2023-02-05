@@ -46,6 +46,10 @@ public class Config implements AutoCloseable {
      */
     protected long getPtr() { return ptr; }
 
+    public boolean isActive() {
+        return ptr != 0;
+    }
+
     /*
      * close
      */
@@ -55,6 +59,11 @@ public class Config implements AutoCloseable {
             ptr = 0;
             population--;
         }
+    }
+
+    public void defaultConfigForLogic(String logic) throws YicesException {
+        int code = Yices.defaultConfigForLogic(ptr, logic);
+        if (code < 0) throw new YicesException();
     }
 
 

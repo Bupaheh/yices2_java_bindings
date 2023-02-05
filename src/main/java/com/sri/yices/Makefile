@@ -64,7 +64,7 @@ CXX ?= g++
 
 
 # JAVAC to compile the java
-JAVAC ?= javac
+JAVAC ?= javac -source 8 -target 8
 
 # these defaults are for the ant build, and
 # should/will be overidden when using the build.sh
