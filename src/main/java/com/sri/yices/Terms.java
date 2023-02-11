@@ -1034,14 +1034,14 @@ public class Terms {
 
     // add n bits
     static public int bvSignExtend(int arg, int n) throws YicesException {
-        if (n <= 0) throw new IllegalArgumentException("n must be positive");
+        if (n < 0) throw new IllegalArgumentException("n must be not negative");
         int t = Yices.bvSignExtend(arg, n);
         if (t < 0) throw new YicesException();
         return t;
     }
 
     static public int bvZeroExtend(int arg, int n) throws YicesException {
-        if (n <= 0) throw new IllegalArgumentException("n must be positive");
+        if (n < 0) throw new IllegalArgumentException("n must be not negative");
         int t = Yices.bvZeroExtend(arg, n);
         if (t < 0) throw new YicesException();
         return t;
